@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "rootDir": "./src",
+        "target": "es2016",
+        "module": "esnext",
+        "allowJs": false,
+        "declaration": true,
+        "declarationDir": "./types",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "removeComments": true
+    },
+    "include": [
+        "./src/**/*.ts",
+        "./src/**/*.d.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "./dist",
+        "./test"
+    ]
+}
