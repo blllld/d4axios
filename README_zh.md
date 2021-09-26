@@ -143,7 +143,7 @@ export default class MyService {
     // 只要导入进来，并且用Use注入
     // 然后就像调用一般属性一样调用服务了
     @Use(SomeService) 
-    someService!:SomeService
+    someService!:S<SomeService>
 
     @Get("/goods/info")
     getGoodsInfo(@SendParam("id") id:string){ 
@@ -167,7 +167,7 @@ import MyService from './MyService.service'
 export default class MyComponent {
 
     @Use(MyService) 
-    myService!:MyService
+    myService!:S<MyService>
     
     async created(){
         let data = await this.myService.getName(10086);
@@ -188,9 +188,9 @@ import OtherService from './OtherService.service'
 @Component()
 export default class MyComponent {
     
-    myService!:MyService
+    myService!:S<MyService>
     
-    otherService !: OtherService
+    otherService !: S<OtherService>
 
     async created(){
         let data = await this.myService.getName(10086);
