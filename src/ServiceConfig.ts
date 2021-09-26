@@ -3,7 +3,6 @@ import { ServiceConfigrationOptions } from '.';
 import BaseService from './service/BaseService';
 import ServiceError, { ERROR } from './ServiceError';
 import { isAxiosInstance, proxySupport } from './utils';
-
 /**
  * 实例单例
  */
@@ -25,7 +24,7 @@ export let beforeResponse: (...args: any[]) => any;
 /**
  * 服务单例
  */
-const services = new Map<string, BaseService>();
+const services = new Map<string, any>();
 
 export function getAxios() {
     if (globalAxios == undefined) {
@@ -39,7 +38,7 @@ export function getAxios() {
  * @param service 
  * @returns 
  */
-export function getService(service: any): BaseService {
+export function getService<T>(service: any): S<T> {
     return services.get(service.__name) || setService(service);
 }
 

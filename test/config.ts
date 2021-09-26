@@ -1,7 +1,6 @@
-import { ServiceConfig } from "../src";
+import { serviceConfig } from '../src/index';
 
-
-ServiceConfig({
+serviceConfig({
     beforeRequest: (args) => {
         return args
     },

@@ -1,6 +1,7 @@
 # how to use `d4axios` in your project ?
 
 [中文说明](./README_zh.md)
+[demo](./test/demo.ts)
 
 > step 1 : `configuration` ，step 2: make a `service` , step 3 : `Use`
 

@@ -11,6 +11,20 @@ export { default as serviceConfig } from './ServiceConfig'
 export { createService, useService } from './vue3Service'
 import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 
+type Picked<T, K extends keyof T> = {
+    [P in K]: T[P] extends (...args: any[]) => any
+    ? ReturnType<T[P]> extends Promise<any>
+    ? <S>(...args: Parameters<T[P]>) => Promise<ResponseDataType<S>>
+    : <S>(...args: Parameters<T[P]>) => ResponseDataType<S>
+    : T[P]
+};
+
+declare global {
+    /** declare your return data */
+    type ResponseDataType<T> = { data: T, code: string, msg: string }
+    type S<F> = Picked<F, keyof F>;
+}
+
 export declare type ServiceConfigrationOptions = {
     axios?: AxiosInstance | AxiosRequestConfig,
     beforeRequest?: (requestArgs: object) => any,

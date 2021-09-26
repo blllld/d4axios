@@ -11,6 +11,6 @@ export function createService(configs: ServiceConfigrationOptions = {}) {
     }
 }
 
-export function useService(service: any) {
-    return getService(service);
+export function useService<T>(service: new (...args: any[]) => T) {
+    return getService<T>(service);
 }

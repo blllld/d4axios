@@ -15,6 +15,6 @@ export default function ServiceMap(...args: any[]) {
         if (service.__name === undefined) {
             throw new ServiceError(ERROR.NoService(service.name))
         }
-        return (services[service.__name] = { get() { return getService(service) } }), services;
+        return (services[service.__name] = { get() { return getService<any>(service) } }), services;
     }, {} as any)
 }

@@ -1,19 +1,35 @@
-import { Post, SendParam, Service, VueServiceBind, RequestPrefix } from '../src/index';
+import { Post, SendParam, Service, RequestPrefix, Use, useService } from '../src/index';
 
-type a = Partial<{}>
+@Service("Other")
+class OtherService {
+    @Post("/myname")
+    async setMyname(@SendParam("id") id: string, @SendParam("name") name: string) { }
+}
+
+type MyResult = { name: string }
+
 @Service("MyService")
 @RequestPrefix("/api")
 export default class MyService {
 
-    @Post("/myname")
-    setMyname<T>(@SendParam("id") id: string, @SendParam("name") name: string) { }
-}
+    @Use(OtherService)
+    otherService: S<OtherService>; // use S<T> mapping type
 
-@VueServiceBind(MyService)
-class MyComponent {
-    myService!: MyService
-    async mounted() {
-        let data = await this.myService.setMyname("1", "张三")
+    @Post("/myname")
+    setMyname(@SendParam("id") id: string, @SendParam("name") name: string) { }
+
+    async myage() {
+
+        let data = await this.otherService.setMyname<MyResult>("1", "2")
+
+        console.log(data) // ResponseDataType<MyResult>
     }
 }
 
+
+
+// in vue
+
+const myservice = useService(MyService)
+
+let data = myservice.setMyname<MyResult>("1", "2");
