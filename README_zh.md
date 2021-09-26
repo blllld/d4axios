@@ -1,4 +1,4 @@
-# 如何在你的项目中使用 `servicex` ?
+# 如何在你的项目中使用 `d4axios` ?
 
 > 使用方式很简单，只要先配置，然后创建一个服务模块，再然后 使用它
 
@@ -25,7 +25,7 @@ export default {
 #### 在 `vue3.x` 下面使用
 ```ts
 // main.ts
-import { createService }  from 'servicex';
+import { createService }  from 'd4axios';
 import { createApp } from 'vue'
 
 
@@ -37,7 +37,7 @@ app.use(createService());
 #### 在其他一般情况下
 ```ts
 // configuration.ts
-import { serviceConfig }  from 'servicex';
+import { serviceConfig }  from 'd4axios';
 import Axios from 'axios'
 
 // 使用默认配置
@@ -61,7 +61,7 @@ serviceConfig({
 ### 2. 创建一个服务
 ```ts
 // 创建服务模块
-import { Service,  Get, Post, Headers }  from 'servicex';
+import { Service,  Get, Post, Headers }  from 'd4axios';
 
 @Service("MyService")
 export default class MyService  { }
@@ -69,7 +69,7 @@ export default class MyService  { }
 
 #### 2.1 发起`Get`请求
 ```ts
-import { Service,  Get, SendParam }  from 'servicex';
+import { Service,  Get, SendParam }  from 'd4axios';
 
 @Service("MyService")
 export default class MyService  { 
@@ -92,7 +92,7 @@ export default class MyService  {
 #### 2.2 `Post` 请求和 `Get` 一样
 
 ```ts
-import { Service,  Get, Post,SendParam }  from 'servicex';
+import { Service,  Get, Post,SendParam }  from 'd4axios';
 
 @Service("MyService")
 export default class MyService  { 
@@ -119,7 +119,7 @@ export default class MyService  {
 #### 3.1 首先创建一个其他服务 `some.service`
 ```ts
 // some.service.ts
-import { Get ,Service,RequestPrefix,Get } from 'servicex';
+import { Get ,Service,RequestPrefix,Get } from 'd4axios';
 
 @Service('SomeService')
 @RequestPrefix("/goods")
@@ -133,7 +133,7 @@ export default class SomeService {
 
 ```ts
 // my.service.ts
-import {Get ,Service,RequestPrefix, Get} from 'servicex';
+import {Get ,Service,RequestPrefix, Get} from 'd4axios';
 import SomeService from './some.service'
 
 @Service('MyService')
@@ -159,7 +159,7 @@ export default class MyService {
 ```ts
 // in vue-ts  use
 
-import { Use } from 'servicex';
+import { Use } from 'd4axios';
 import MyService from './MyService.service'
 
 @Component()
@@ -179,7 +179,7 @@ export default class MyComponent {
 ```ts
 // or muti bind
 
-import { VueServiceBind } from 'servicex';
+import { VueServiceBind } from 'd4axios';
 import MyService from './MyService.service'
 import OtherService from './OtherService.service'
 
@@ -204,7 +204,7 @@ export default class MyComponent {
 ```ts
 // in vue3 
 
-import { useService } from 'servicex';
+import { useService } from 'd4axios';
 import MyService from './MyService.service'
 
 export default {
@@ -217,7 +217,7 @@ export default {
 ```ts
 // in normal 
 
-import { mapService } from 'servicex';
+import { mapService } from 'd4axios';
 import MyService from './MyService.service'
 
 export default {

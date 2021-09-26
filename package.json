@@ -1,7 +1,7 @@
 {
-    "name": "servicex",
+    "name": "d4axios",
     "version": "0.0.1",
-    "description": "a service decorator for request",
+    "description": "a service decorator for axios",
     "main": "dist/index.js",
     "module": "dist/index.esm.js",
     "cjs": "dist/index.cjs.js",
@@ -16,11 +16,11 @@
     "author": "blllld",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/blllld/servicex/issues"
+        "url": "https://github.com/blllld/d4axios/issues"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/blllld/servicex.git"
+        "url": "https://github.com/blllld/d4axios.git"
     },
     "types": "types/index.d.ts",
     "files": [

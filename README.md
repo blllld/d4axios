@@ -1,4 +1,4 @@
-# how to use `servicex` in your project ?
+# how to use `d4axios` in your project ?
 
 [中文说明](./README_zh.md)
 
@@ -28,7 +28,7 @@ now in your `main.ts` or `main.js`, regist `serviceConfig`
 #### for `vue3.x`
 ```ts
 // main.ts
-import { createService }  from 'servicex';
+import { createService }  from 'd4axios';
 import { createApp } from 'vue'
 
 
@@ -40,7 +40,7 @@ app.use(createService());
 ### for normal
 ```ts
 // configuration.ts
-import { serviceConfig }  from 'servicex';
+import { serviceConfig }  from 'd4axios';
 import Axios from 'axios'
 
 // or use Service provide 
@@ -65,7 +65,7 @@ serviceConfig({
 ### 2. create a service
 ```ts
 // create a serivce module
-import { Service,  Get, Post, Headers }  from 'servicex';
+import { Service,  Get, Post, Headers }  from 'd4axios';
 
 @Service("MyService")
 export default class MyService  { }
@@ -73,7 +73,7 @@ export default class MyService  { }
 
 #### 2.1 Get
 ```ts
-import { Service,  Get, SendParam }  from 'servicex';
+import { Service,  Get, SendParam }  from 'd4axios';
 
 @Service("MyService")
 export default class MyService  { 
@@ -96,7 +96,7 @@ export default class MyService  {
 #### 2.2 Post the same as Get 
 
 ```ts
-import { Service,  Get, Post,SendParam }  from 'servicex';
+import { Service,  Get, Post,SendParam }  from 'd4axios';
 
 @Service("MyService")
 export default class MyService  { 
@@ -122,7 +122,7 @@ export default class MyService  {
 
 ```ts
 // some.service.ts
-import {Get ,Service,RequestPrefix,Get} from 'servicex';
+import {Get ,Service,RequestPrefix,Get} from 'd4axios';
 
 @Service('SomeService')
 @RequestPrefix("/goods")
@@ -136,7 +136,7 @@ next use `some.service` in `my.service`
 
 ```ts
 // my.service.ts
-import {Get ,Service,RequestPrefix, Get} from 'servicex';
+import {Get ,Service,RequestPrefix, Get} from 'd4axios';
 import SomeService from './some.service'
 
 @Service('MyService')
@@ -161,7 +161,7 @@ export default class MyService {
 ```ts
 // in vue-ts  use
 
-import { Use } from 'servicex';
+import { Use } from 'd4axios';
 import MyService from './MyService.service'
 
 @Component()
@@ -181,7 +181,7 @@ export default class MyComponent {
 ```ts
 // or muti bind
 
-import { VueServiceBind } from 'servicex';
+import { VueServiceBind } from 'd4axios';
 import MyService from './MyService.service'
 import OtherService from './OtherService.service'
 
@@ -204,7 +204,7 @@ export default class MyComponent {
 ```ts
 // in normal 
 
-import { mapService } from 'servicex';
+import { mapService } from 'd4axios';
 import MyService from './MyService.service'
 
 export default {
