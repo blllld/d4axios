@@ -221,7 +221,8 @@ export default {
 
 ## in your project root create  `index.d.ts` and declare to cover `ResponseDataType<T>`
 ```TS
-declare type ResponseDataType<T> = {
+// index.d.ts
+declare interface ResponseDataType<T>  {
     // your response type
-};
+}
 ```

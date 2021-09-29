@@ -1,6 +1,7 @@
 export { default as Header } from './decorator/methods/Header'
 export { default as Get } from './decorator/methods/http/Get'
 export { default as Post } from './decorator/methods/http/Post'
+export { default as RestOnly } from './decorator/methods/RestOnly'
 export { default as SendParam } from './decorator/methods/SendParam'
 export { default as RequestPrefix } from './decorator/RequestPrefix'
 export { default as Service } from './decorator/Service'
@@ -19,9 +20,9 @@ type Picked<T, K extends keyof T> = {
     : T[P]
 };
 /** declare your return data */
-export type ResponseDataType<T> = { data: T, code: string, msg: string }
 declare global {
     type S<F> = Picked<F, keyof F>;
+    export interface ResponseDataType<T> { }
 }
 
 export declare type ServiceConfigrationOptions = {
