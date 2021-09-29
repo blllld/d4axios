@@ -34,28 +34,30 @@ function refactorMethod(originalMethod: TypeOriginMethod, config: ReuqestConfig)
         let restParams = originalURL.match(/:(\w+)/g) ?? [];
 
         if (restParams.length > 0 && callArgs.length > 0) {
-            let rests: any = {};
-            if (rest.length > 0) {
-                rest.forEach(({ name, defaultValue }, index) => {
-                    rests[":" + name] = callArgs[index] ?? defaultValue;
-                    rtnArgs[name] = undefined;
-                });
+            if (callArgs.length > 0) {
+                let rests: any = {};
+                if (rest.length > 0) {
+                    rest.forEach(({ name, defaultValue }, index) => {
+                        rests[":" + name] = callArgs[index] ?? defaultValue;
+                        rtnArgs[name] = undefined;
+                    });
+                } else {
+                    restParams.forEach((matchKey) => {
+                        rests[matchKey] = rtnArgs[matchKey.substring(1)]
+                    })
+                }
+                originalURL = urlReplace(originalURL, rests);
+                let checkRest = originalURL.match(/:(\w+)/g) ?? [];
+                if (checkRest.length > 0) {
+                    throw new ServiceError(ERROR.RestfulError(originalURL, restParams.length, restParams.length - checkRest.length));
+                }
+
             } else {
-                restParams.forEach((matchKey) => {
-                    rests[matchKey] = rtnArgs[matchKey.substring(1)]
-                })
-            }
-            originalURL = urlReplace(originalURL, rests);
-            let checkRest = originalURL.match(/:(\w+)/g) ?? [];
-            if (checkRest.length > 0) {
-                throw new ServiceError(ERROR.RestfulError(originalURL, restParams.length, restParams.length - checkRest.length));
-            }
-        } else {
-            if (callArgs.length > 0 && isEmptyObject(rtnArgs)) {
-                console.warn(`[d4axios] call arguments length is ${callArgs.length} but request params is empty,maybe you should use @SendParam to provide  params`)
-            } else if (callArgs.length === 0) {
                 throw new ServiceError(ERROR.RestfulError(originalURL, restParams.length));
             }
+
+        } else if (callArgs.length > 0 && isEmptyObject(rtnArgs)) {
+            console.warn(`[d4axios] call arguments length is ${callArgs.length} but request params is empty,maybe you should use @SendParam to provide  params`)
         }
 
         // 请求前的hook
