@@ -18,6 +18,9 @@ export default class MyService {
     @Post("/myname")
     setMyname(@SendParam("id") id: string, @SendParam("name") name: string) { }
 
+    @Post("/download")
+    donwload(form:FormData){  }
+
     async myage() {
 
         let data = await this.otherService.setMyname<MyResult>("1", "2")

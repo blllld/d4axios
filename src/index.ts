@@ -46,6 +46,7 @@ export declare type ReuqestConfig = { method: string, url: string, doRequest: an
 export declare type TypeOriginMethod = {
     (...args: any[]): any,
     $sends?: { name: string, defaultValue: any }[],
+    $rest?: { name: string, defaultValue: any }[],
     $headers?: object | ((args: any) => any)
 }
 

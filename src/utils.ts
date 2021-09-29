@@ -36,14 +36,16 @@ export function dataType(val: any): string {
             return type;
     }
 }
-
+export function isVoid(params: any): boolean {
+    return params === "" && params !== false && params !== 0 && !!params
+}
 /**
  * 允许的数据类型
  * @param params 
  * @returns 
  */
 export function isAllowParam(params: any): boolean {
-    if (isObject(params)) {
+    if (shouldObject(params)) {
         return true;
     }
     if (isFormData(params)) {
@@ -60,7 +62,7 @@ export function isFunction(params): params is Function {
     return typeof (params) === 'function';
 }
 export function isBasis(params) {
-    return dataType(params) === 'string' || dataType(params) === 'number'
+    return dataType(params) === 'string' || dataType(params) === 'number' || dataType(params) === 'boolean'
 }
 /**
  * 判断是否是axios实例
@@ -70,13 +72,22 @@ export function isBasis(params) {
 export function isAxiosInstance(axios: any): axios is AxiosInstance {
     return axios && typeof (axios.get) === "function"
 }
+
 /**
- * 判断是否是一个object对象
- * @param params 入参
+ * 判断这个对象为一个object，包括 {...}  new class 等
+ * @param params 
+ */
+export function shouldObject(params: any): params is object {
+    return typeof params === 'object' && !!params
+}
+
+/**
+ * 判断一个对象为空值 {}
+ * @param params 
  * @returns 
  */
-export function isObject(params: any): params is object {
-    return dataType(params) === 'object'
+export function isEmptyObject(params: any) {
+    return Object.keys(params).length == 0;
 }
 /**
  * 判断对象是否是一个 formdata
@@ -109,17 +120,24 @@ export function isArray(params: any): params is Array<any> {
  * @returns 
  */
 export function transferData(params: any): any {
+    if (isBasis(params)) {
+        return {}
+    }
+
+    if (isArray(params)) {
+        console.warn("params should not be a array, and we droped it")
+        return {}
+    }
+
+    if (!isFunction(params.forEach)) {
+        return params;
+    }
+
+    let obj = {};
     // 可以混用
     // Map 和 FormData的 forEach是一样的
-    if (isObject(params)) {
-        return params;
-    } else {
-        let obj = {};
-        params.forEach((v, k) => {
-            obj[k] = v
-        })
-        return obj;
-    }
+    params.forEach((v, k) => obj[k] = v);
+    return obj;
 }
 /**
  * 合并替换restful请求参数
@@ -140,16 +158,20 @@ export function urlJoin(...args: string[]) {
  * @param params 实际参数
  * @returns 
  */
-export function urlReplace(url: string, p: string[], params: any): string {
-    let isarr = isArray(params);
-    params = transferData(params);
-    return p.reduce((url, pk, index) => {
-        let kystr = pk.substring(1);
-        let valuekey = isarr ? index : kystr
-        let value = params[valuekey];
-        if (!isBasis(value)) {
-            value = value.get ? value.get(kystr) : value[kystr]
-        }
-        return url.replace(pk, value)
-    }, url)
+export function urlReplace(url: string, restParams: { [key in string]: any }): string {
+    for (let key in restParams) {
+        url = url.replace(key, restParams[key])
+    }
+    return url;
+}
+
+export function transfer2FormData(params: any, should: boolean) {
+    if (!should) {
+        return params
+    }
+    let fd = new FormData();
+    for (let key in params) {
+        fd.append(key, params[key]);
+    }
+    return fd;
 }

@@ -19,13 +19,20 @@ export const ERROR = {
             msg: `Service loss decorator @Service(${name})`
         }
     },
-    ArgsError: (url,type) => {
+    ArgsError: (url, type) => {
         return {
             code: 2001,
             name: "ArgsError",
-            msg: ` ${url} of methods result only support in object，Map，FormData Got ${type}`
+            msg: ` ${url} of method result only support in object，Map，FormData Got ${type}`
         }
     },
+    RestfulError: (url, length: number,callargs:number = 0) => {
+        return {
+            code: 2002,
+            name: "RestfulReplaceError",
+            msg: `${url} restful matched ${length} params but only replace ${callargs} size`
+        }
+    }
 }
 
 
@@ -36,6 +43,6 @@ export default class ServiceError extends Error {
     constructor(error: ErrorType) {
         super();
         this.name = error.name
-        this.message = `code: ${error.code},Cause [${error.msg}]`
+        this.message = `[d4axios] code: ${error.code},Cause [${error.msg}]`
     }
 }
