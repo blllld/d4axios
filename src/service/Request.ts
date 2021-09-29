@@ -7,7 +7,7 @@ import BaseService from './BaseService';
 function refactorMethod(originalMethod: TypeOriginMethod, config: ReuqestConfig) {
     return async function (this: BaseService) {
         let callArgs = [].slice.call(arguments);
-        let rtnArgs = originalMethod.call(this, callArgs)
+        let rtnArgs = await originalMethod.call(this, callArgs)
         let sends = originalMethod.$sends ?? [];
         let rest = originalMethod.$rest ?? [];
         let shouldTransferFormData = false;
@@ -31,7 +31,7 @@ function refactorMethod(originalMethod: TypeOriginMethod, config: ReuqestConfig)
 
         // 处理请求url
         let originalURL = urlJoin(this.__prefix, config.url);
-        let restParams = originalURL.match(/:(\w+)/g);
+        let restParams = originalURL.match(/:(\w+)/g) ?? [];
 
         if (restParams.length > 0 && callArgs.length > 0) {
             let rests: any = {};
@@ -66,7 +66,7 @@ function refactorMethod(originalMethod: TypeOriginMethod, config: ReuqestConfig)
         if (isFunction(headers)) {
             headers = headers(finalArgs)
         }
-        
+
         let response = await config.doRequest.call(this, originalURL, finalArgs, headers)
         // 请求后的hook
         return beforeResponse(response.data, response);

@@ -230,3 +230,11 @@ export default {
     }
 }
 ```
+
+
+## 在你的项目根路径下定义 `index.d.ts`文件，申明以下类型以覆盖默认的`ResponseDataType<t>`
+```TS
+declare type ResponseDataType<T> = {
+   // your response type
+};
+```

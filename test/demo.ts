@@ -24,15 +24,11 @@ export default class MyService {
     async myage() {
 
         let data = await this.otherService.setMyname<MyResult>("1", "2")
-
         console.log(data) // ResponseDataType<MyResult>
     }
 }
 
 
-
 // in vue
-
 const myservice = useService(MyService)
-
 let data = myservice.setMyname<MyResult>("1", "2");

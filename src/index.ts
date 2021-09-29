@@ -18,10 +18,9 @@ type Picked<T, K extends keyof T> = {
     : <S>(...args: Parameters<T[P]>) => ResponseDataType<S>
     : T[P]
 };
-
+/** declare your return data */
+export type ResponseDataType<T> = { data: T, code: string, msg: string }
 declare global {
-    /** declare your return data */
-    type ResponseDataType<T> = { data: T, code: string, msg: string }
     type S<F> = Picked<F, keyof F>;
 }
 
