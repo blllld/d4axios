@@ -1,10 +1,10 @@
-import { ReuqestConfig, TypeOriginMethod } from '..';
+import { RequestConfig, TypeOriginMethod } from '..';
 import { beforeRequest, beforeResponse } from '../ServiceConfig';
 import ServiceError, { ERROR } from '../ServiceError';
 import { isAllowParam, isEmptyObject, isFormData, isFunction, transfer2FormData, transferData, urlJoin, urlReplace } from '../utils';
 import BaseService from './BaseService';
 
-function refactorMethod(originalMethod: TypeOriginMethod, config: ReuqestConfig) {
+function refactorMethod(originalMethod: TypeOriginMethod, config: RequestConfig) {
     return async function (this: BaseService) {
         let callArgs = [].slice.call(arguments);
         let rtnArgs = await originalMethod.call(this, callArgs)
@@ -78,7 +78,7 @@ function refactorMethod(originalMethod: TypeOriginMethod, config: ReuqestConfig)
  * @param config 
  * @returns 
  */
-export default function Request(config: ReuqestConfig) {
+export default function Request(config: RequestConfig) {
     return function (service: any, funName: string, descriptor: TypedPropertyDescriptor<(...args: any[]) => any>) {
         descriptor.value = refactorMethod(descriptor.value, config);
         descriptor.writable = false

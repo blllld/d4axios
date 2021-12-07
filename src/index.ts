@@ -42,7 +42,7 @@ export declare type ServiceConfigrationOptions = {
     }
 };
 
-export declare type ReuqestConfig = { method: string, url: string, doRequest: any }
+export declare type RequestConfig = { method: string, url: string, doRequest: any }
 
 export declare type TypeOriginMethod = {
     (...args: any[]): any,
