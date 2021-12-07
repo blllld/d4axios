@@ -1,5 +1,3 @@
-import BaseService from "../service/BaseService";
-
 /**
  * url前缀
  * @param urlprefix 

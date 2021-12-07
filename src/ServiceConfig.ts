@@ -1,6 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
 import { ServiceConfigrationOptions } from '.';
-import BaseService from './service/BaseService';
 import ServiceError, { ERROR } from './ServiceError';
 import { isAxiosInstance, proxySupport } from './utils';
 /**
@@ -44,7 +43,7 @@ export function getService<T>(service: any): S<T> {
 
 export function setService(service: any) {
     const newService = new service;
-    newService.__prefix = service.__prefix;
+    newService.__prefix= service.__prefix;
     services.set(service.__name, newService);
 
     return proxySupport(newService)
