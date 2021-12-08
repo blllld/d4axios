@@ -1,4 +1,4 @@
-import { Post, SendParam, Service, RequestPrefix, Use, useService } from '../src/index';
+import { Post, SendParam, Service, RequestPrefix, Use, useService, Header } from '../src/index';
 
 @Service("Other")
 class OtherService {
@@ -19,7 +19,8 @@ export default class MyService {
     setMyname(@SendParam("id") id: string, @SendParam("name") name: string) { }
 
     @Post("/download")
-    donwload(form:FormData){  }
+    @Header({"Content-type":"multipart/form-data"})
+    donwload(form: FormData) { }
 
     async myage() {
 

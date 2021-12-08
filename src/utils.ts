@@ -164,7 +164,12 @@ export function urlReplace(url: string, restParams: { [key in string]: any }): s
     }
     return url;
 }
-
+/**
+ * 将对象转为formdata
+ * @param params 
+ * @param should 
+ * @returns 
+ */
 export function transfer2FormData(params: any, should: boolean) {
     if (!should) {
         return params
