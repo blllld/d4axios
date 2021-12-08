@@ -145,7 +145,7 @@ import SomeService from './some.service'
 export default class MyService {
 
     @Use(SomeService) 
-    someService!:SomeService
+    someService!:S<SomeService>
 
     @Get("/goods/info")
     getGoodsInfo(@SendParam("id") id:string){ 
@@ -169,7 +169,7 @@ import MyService from './MyService.service'
 export default class MyComponent {
 
     @Use(MyService) 
-    myService!:MyService
+    myService!:S<MyService>
     
     async created(){
         let data = await this.myService.getName(10086);
@@ -190,9 +190,9 @@ import OtherService from './OtherService.service'
 @Component()
 export default class MyComponent {
     
-    myService!:MyService
+    myService!:S<MyService>
     
-    otherService !: OtherService
+    otherService !: S<OtherService>
 
     async created(){
         let data = await this.myService.getName(10086);
@@ -219,7 +219,7 @@ export default {
 ```
 
 
-## in your project root create  `index.d.ts` and declare to cover `ResponseDataType<T>`
+## in your project root create  `d4axios.d.ts` and declare to cover `ResponseDataType<T>`
 ```TS
 // index.d.ts
 declare interface ResponseDataType<T>  {

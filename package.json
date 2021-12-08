@@ -1,6 +1,6 @@
 {
     "name": "d4axios",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "a service decorator for axios",
     "main": "dist/index.js",
     "module": "dist/index.esm.js",
