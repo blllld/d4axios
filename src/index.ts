@@ -1,6 +1,7 @@
 export { default as Header } from './decorator/methods/Header'
 export { default as Get } from './decorator/methods/http/Get'
 export { default as Post } from './decorator/methods/http/Post'
+export { default as Upload } from './decorator/methods/http/Upload'
 export { default as RestOnly } from './decorator/methods/RestOnly'
 export { default as SendParam } from './decorator/methods/SendParam'
 export { default as RequestPrefix } from './decorator/RequestPrefix'
@@ -41,7 +42,7 @@ export declare type ServiceConfigrationOptions = {
     }
 };
 
-export declare type ReuqestConfig = { method: string, url: string, doRequest: any }
+export declare type RequestConfig = { method: string, url: string, doRequest: any }
 
 export declare type TypeOriginMethod = {
     (...args: any[]): any,
