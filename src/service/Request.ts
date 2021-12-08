@@ -69,7 +69,11 @@ function refactorMethod(originalMethod: TypeOriginMethod, config: RequestConfig)
             headers = headers(finalArgs)
         }
 
-        let response = await config.doRequest.call(this, originalURL, finalArgs, headers)
+        let response = await config.doRequest.call(this, originalURL, finalArgs, headers);
+
+        if(config.fullReturn){
+            return response;
+        }
         // 请求后的hook
         return beforeResponse(response.data, response);
     }
@@ -80,7 +84,7 @@ function refactorMethod(originalMethod: TypeOriginMethod, config: RequestConfig)
  * @param config 
  * @returns 
  */
-export default function Request(config: RequestConfig) {
+export default function Request(config: RequestConfig) :any{
     return function (service: any, funName: string, descriptor: TypedPropertyDescriptor<(...args: any[]) => any>) {
         descriptor.value = refactorMethod(descriptor.value, config);
         descriptor.writable = false
