@@ -7,7 +7,7 @@ import BaseService from './BaseService';
 function refactorMethod(originalMethod: TypeOriginMethod, config: RequestConfig) {
     return async function (this: BaseService) {
         let callArgs = [].slice.call(arguments);
-        let rtnArgs = await originalMethod.call(this, callArgs)
+        let rtnArgs = await originalMethod.apply(this, callArgs)
         let sends = originalMethod.$sends ?? [];
         let rest = originalMethod.$rest ?? [];
         let shouldTransferFormData = false;
