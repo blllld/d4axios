@@ -16,10 +16,10 @@ export { createService, useService } from './vue3Service'
 import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 
 type Picked<T, K extends keyof T> = {
-    [P in K]: T[P] extends (...args: any[]) => any
-    ? ReturnType<T[P]> extends Promise<any>
-    ? <S>(...args: Parameters<T[P]>) => Promise<ResponseDataType<S>>
-    : (...args: Parameters<T[P]>) => T[P]
+    [P in K]: T[P] extends (...args: any[]) => any // 如果是一个函数对象
+    // 如果这个函数是一个promise值
+    ? (ReturnType<T[P]> extends Promise<any> ? <S>(...args: Parameters<T[P]>) => Promise<ResponseDataType<S>> : (...args: Parameters<T[P]>) => ReturnType<T[P]>)
+    // 否则是一个普通对象
     : T[P]
 };
 /** declare your return data */
