@@ -62,7 +62,7 @@ function refactorMethod(originalMethod: TypeOriginMethod, config: RequestConfig)
         }
 
         // 请求前的hook
-        let finalArgs = beforeRequest(transfer2FormData(rtnArgs, shouldTransferFormData));
+        let finalArgs = transfer2FormData(beforeRequest(rtnArgs), shouldTransferFormData);
 
         // 处理请求header
         let headers = originalMethod.$headers;

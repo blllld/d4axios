@@ -1,209 +1,212 @@
-# how to use `d4axios` in your project ?
+# 在项目中使用 `d4axios`
 
-[中文说明](./README_zh.md)
-[demo](./test/demo.ts)
+> `d4axios` **(Decorators for Axios)** 是一款基于`axios`请求方式的装饰器方法组，可以快速地对服务进行管理和控制，增强前端下服务请求方式，有效降低服务的认知难度，并且在基于ts的情况下可以保证服务的前后台的数据接口一致性
 
-> step 1 : `configuration` ，step 2: make a `service` , step 3 : `Use`
+## 一、 引入配置信息
+在这里提供了几种配置方式，可以采用原始的axios的配置方法，也可以采用 `d4axios` 提供的方法
 
-## as we know in vue or react , we use `axios` to send  request service such as :
-
-```js
-// in vue
-export default {
-    created(){
-        this.$axios.get("/url",{
-            params:{ some:"value" }
-        })
-    }
-}
-```
-more and more code in `.vue` and makes business becoming complex，it cause repetition rate of code becoming higher。It is correctly to find a useful code organization group to make the code easy to maintain
-
-## now，you can use a type likes spring-mvc 
-
-### 1. configuration
-at default ,use `axios` as request method; and support `axios` configuration;
-and nor need regist axios any more;
-
-now in your `main.ts` or `main.js`, regist `serviceConfig`
-#### for `vue3.x`
 ```ts
-// main.ts
-import { createService }  from 'd4axios';
+// 在 vue3下我们建议使用 `createService` 
+// 其他情况下使用 `serviceConfig`
 import { createApp } from 'vue'
+import {createService,serviceConfig} from 'd4axios'
 
 
-const app = createApp();
-
-app.use(createService());
+createApp(App).use(createService({ ... /* 一些配置信息 */}))
 
 ```
-### for normal
+### 1.1 提供的axios配置项
+
+`createService` 和 `serviceConfig` 使用的配置项是一样的，并且完全兼容axios的配置。在现有的项目中改造的话，可以使用：
+
 ```ts
-// configuration.ts
-import { serviceConfig }  from 'd4axios';
-import Axios from 'axios'
+// 可以直接使用由d4axios提供的服务
+createService()
 
-// or use Service provide 
-serviceConfig();
+// 可直接传入axios的相关配置，由d4axios自动基于配置相关构建
+createService({axios:{ baseURL:"domain.origin" }})
 
-// config your setting axios 
-// there provide some simple config，
-// if you needs more  ，please config in axios and provide it instance
-serviceConfig({ 
-    axios:Axios,
-    // also prodive axiosInstance.interceptors config
-    interceptors: {
-        request{ use(AxiosRequestConfig){},reject(err){}},
-        response:{ use(AxiosResponse){},reject(err){}}
+// 可直接传入已经配置好的 `axios` 实例对象
+const axios = Axios.create({ /* 你的配置*/ });
+
+
+createService({axios})
+```
+### 1.2 提供基于请求和相应数据的配置
+
+```ts
+createService({
+    beforeRequest(requestData){
+        // form对象会被转为JSON对象的浅拷贝，但是会在该方法执行完后重新转为form对象
+        // 你可在请求前追加一些补充的请求参数
+        // 比如对请求体进行签名等等
+        return requestData
     },
-    // or use simle interceptors
-    beforeRequest(requestArgs){},
-    beforeResponse(AxiosResponse['data']){}
-});
-```
-
-### 2. create a service
-```ts
-// create a serivce module
-import { Service,  Get, Post, Headers }  from 'd4axios';
-
-@Service("MyService")
-export default class MyService  { }
-```
-
-#### 2.1 Get
-```ts
-import { Service,  Get, SendParam }  from 'd4axios';
-
-@Service("MyService")
-export default class MyService  { 
-
-    // as default use set headers
-    @Get("/getname")
-    getName(@SendParam("id") id:string){}
-
-    // restful ,if it has not @SendParam must as args queue to replace 
-    @Get("/getname/:id")
-    getNameRestful(id:string){ }
-
-    // mixin restful and params
-    @Get("/getname/:id")
-    getNameMixin(id:string, @SendParam("age") age:number){ }
-
-}
-```
-
-#### 2.2 Post the same as Get 
-
-```ts
-import { Service,  Get, Post,SendParam }  from 'd4axios';
-
-@Service("MyService")
-export default class MyService  { 
-
-    @Get("/getname/:id")
-    getNameRestful(id:string){ }
-    
-    // can use defined method as a service
-    // but you should return a named object
-    @Post("/update/:id")
-    async updateInfo(id:string ){
-        let data = await this.getNameRestful(id);
-        let userName = data;
-        if(userName == null){
-            userName = "generate";
-        }
-        return { id, userName }
+    beforeResponse(responseData){
+        // 默认情况下会返回 axios的response.data值，而不会返回response的完整对象
+        // 可以修改返回的响应结果
+        return responseData
     }
-}
+})
 ```
-
-### 3. in `Use` another service;
+### 1.3 提供快速的axios `interceptors` 配置
 
 ```ts
-// some.service.ts
-import {Get ,Service,RequestPrefix,Get} from 'd4axios';
+createService({
+    interceptors:{
+        request：{
+            use(AxiosRequestConfig){},
+            reject(){}
+        },
+        response{
+            use(AxiosResponse){},
+            reject(){}
+        }
+    }
+})
+```
+配置完成后，会返回一个axios实例对象，可以继续对axios对象做更多的操作，可以绑定到vue.prototype.$axios下使用
 
-@Service('SomeService')
-@RequestPrefix("/goods")
-export default class SomeService {
-    @Get("/info")
-    getGoodsInfo(@SendParam("id") id:string){ }
+```ts
+Vue.prototype.$axios = serviceConfig({... /*一些配置*/})
+```
+
+
+## 二、创建请求服务
+
+> 在使用这个方式之前，我想大部分的人也想到了去封装一个请求，然后每一次调用去做Get 、Post的请求服务，也有一些人习惯在vue里直接编写 `this.$axios.get()` ，萝卜青菜各有所爱，没有优劣之分。
+
+但是为了更好的组织业务逻辑，`d4axios`提供了一系列的组织方法，供挑选使用
+
+```ts
+import {Service,Prefix,Get,Post,Download,Upload,Param} from 'd4axios'
+
+@Service("UserService") // 需要提供一个服务名称，该名称将在使用服务的时候被用到
+@Prefix("/user") // 可以给当前的服务添加一个请求前缀
+export class UserService {
+
+    @Get("/:id") // 等同于 /user/:id
+    async getUserById(id:string){
+        // 异步请求需要增加 `async` 属性以便语法识别
+        // 支持restful的方式
+    }
+
+
+    @Post("/regist")
+    async registUser(form:UserForm){
+        // 可以在请求的时候做一些参数修改
+        form.nickName = createNickName(form.nickName);
+
+        // return的值是最终请求的参数
+        return {
+            ...form,
+            plant:"IOS"
+        };
+    }
+
+    @Download("/user/card") // 支持文件下载
+    async downloadCard(@Param("id") id:stirng){
+        // 当我们的参数较少并且不是一个key-value形式的值时
+        // 可以使用@Param辅助，确定传参名称
+    }
+    
+    @Upload("/user/card") // 支持文件上传
+    async uploadCard(file:File){
+        return {file}
+    }
+
+    // 可以定义同步函数，直接做服务计算
+    someSyncFunc(){
+        return 1+1
+    }
+
+    // 我们还可以直接定义非请求函数
+    async someFunc(){
+        // 所有的当前函数都是可以直接调用的
+        return await this.getUserById(this.someSyncFunc());
+    }
+   
 }
 
 ```
-next use `some.service` in `my.service`
+## 三、使用服务
 
+> 使用服务分为几种方式，第一种是在一个服务中调用另一个服务。第二种是在react或者vue中调用服务，对于这两种有不同的方法，也可以用相同的方法。
+
+### 3.1 在 vue或者react中使用`useService` 导入服务
 ```ts
-// my.service.ts
-import {Get ,Service,RequestPrefix, Get} from 'd4axios';
+// 在 vue 或者 react中，可以直接使用 useService 导入一个服务对象
+import {useService} from 'd4axios'
 import SomeService from './some.service'
 
-@Service('MyService')
-@RequestPrefix("/me")
-export default class MyService {
+const someService  = useService(SomeService)
 
-    @Use(SomeService) 
-    someService!:S<SomeService>
+```
 
-    @Get("/goods/info")
-    getGoodsInfo(@SendParam("id") id:string){ 
-        return this.someService.getGoodsInfo(id)
-    }
+### 3.2 在一个服务中`Use`调用另一个服务
+
+```ts
+import {Use} from 'd4axios'
+
+import SomeService from './some.service'
+
+@Service("MyService")
+export class MyService {
+    @Use(SomeService)  // use 导入服务
+    // 默认的属性名为小写驼峰
+    // 用 S<T> 包裹服务名称，这样可以得到相应的async方法的响应类型
+    someService !: S<SomeService> 
 }
 
 ```
 
-### 4. use service in vue
-
-#### 4.1 in `Use`
+## 四、响应重写 
+默认情况下，d4axios支持async响应类型值，该值为 
+```ts
+ export interface ResponseDataType<T> { }
+```
+在项目根路径下定义 d4axios.d.ts文件
+然后文件内定义，通过重写该类型，可以得到响应的 response type类型，比如
 
 ```ts
-// in vue-ts  use
 
-import { Use } from 'd4axios';
-import MyService from './MyService.service'
-
-@Component()
-export default class MyComponent {
-
-    @Use(MyService) 
-    myService!:S<MyService>
-    
-    async created(){
-        let data = await this.myService.getName(10086);
-    }
+export interface ResponseDataType<T> { 
+    data : T;
+    msg:string ;
+    code:string ;
 }
 ```
 
-#### 4.2 in `VueServiceBind`
+后即可以得到相关内容的提示信息 ![Image text](./dataType.png)
+
+## 五、其他一些基于 Decorators 的操作
+
+### 5.1 在使用装饰器的class上都可以使用 `Use` 导入服务 比如：
 
 ```ts
-// or muti bind
+import {Component,Vue,} from 'vue-class-decorator'
+import SomeService from './some.service'
 
-import { VueServiceBind } from 'd4axios';
-import MyService from './MyService.service'
-import OtherService from './OtherService.service'
+@VueServiceBind(MyService,OtherService) // 只能在vue的这种形式下使用，可以绑定多个值
+@Component
+export default class MyVueComp extends Vue {
 
-@VueServiceBind(MyService,OtherService)
-@Component()
-export default class MyComponent {
-    
-    myService!:S<MyService>
-    
+    @Use(SomeService)  // use 导入服务
+    // 默认的属性名为小写驼峰
+    // 用 S<T> 包裹服务名称，这样可以得到相应的async方法的响应类型
+    someService !: S<SomeService> 
+
+    myService !: S<MyService>
+
     otherService !: S<OtherService>
-
-    async created(){
-        let data = await this.myService.getName(10086);
-    }
 }
 ```
 
-#### 4.3 in `mapService`
+### 5.2 在一般的vue的服务下可以使用这种 `mapService` 形式
+
 
 ```ts
-// in normal 
+// 传统的模式下
 
 import { mapService } from 'd4axios';
 import MyService from './MyService.service'
@@ -215,14 +218,5 @@ export default {
     created(){
         this.myService.getName(10086);
     }
-}
-```
-
-
-## in your project root create  `d4axios.d.ts` and declare to cover `ResponseDataType<T>`
-```TS
-// index.d.ts
-declare interface ResponseDataType<T>  {
-    // your response type
 }
 ```

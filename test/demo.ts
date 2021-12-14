@@ -16,10 +16,10 @@ export default class MyService {
     otherService: S<OtherService>; // use S<T> mapping type
 
     @Post("/myname")
-    setMyname(@SendParam("id") id: string, @SendParam("name") name: string) { }
+    async setMyname(@SendParam("id") id: string, @SendParam("name") name: string) { }
 
     @Post("/download")
-    @Header({"Content-type":"multipart/form-data"})
+    @Header({ "Content-type": "multipart/form-data" })
     donwload(form: FormData) { }
 
     async myage() {
@@ -31,5 +31,7 @@ export default class MyService {
 
 
 // in vue
-const myservice = useService(MyService)
-let data = myservice.setMyname<MyResult>("1", "2");
+(async () => {
+    const myservice = useService(MyService)
+    let data = await myservice.setMyname("1", "2");
+})

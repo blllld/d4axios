@@ -5,7 +5,7 @@ export { default as Get } from './decorator/methods/http/Get'
 export { default as Post } from './decorator/methods/http/Post'
 export { default as Upload } from './decorator/methods/http/Upload'
 export { default as RestOnly } from './decorator/methods/RestOnly'
-export { default as SendParam } from './decorator/methods/SendParam'
+export { default as SendParam,default as Param } from './decorator/methods/SendParam'
 export { default as Prefix, default as RequestPrefix } from './decorator/RequestPrefix'
 export { default as Service } from './decorator/Service'
 export { default as mapService } from './decorator/ServiceMap'
@@ -25,13 +25,12 @@ type Picked<T, K extends keyof T> = {
 /** declare your return data */
 declare global {
     type S<F> = Picked<F, keyof F>;
-    export interface ResponseDataType<T> { }
+    export interface ResponseDataType<T> {
+     }
 }
 
 export declare type ServiceConfigrationOptions = {
     axios?: AxiosInstance | AxiosRequestConfig,
-    beforeRequest?: (requestArgs: object) => any,
-    beforeResponse?: (response: object) => any,
     interceptors?: {
         request?: {
             use: <T = AxiosRequestConfig>(value: T) => T | Promise<T>,
@@ -41,7 +40,9 @@ export declare type ServiceConfigrationOptions = {
             use: <T = AxiosResponse>(value: T) => T | Promise<T>,
             reject?: (error: any) => any
         }
-    }
+    },
+    beforeRequest?: (requestArgs: object) => any,
+    beforeResponse?: (response: object) => any,
 };
 
 export declare type RequestConfig = { method: string, url: string, doRequest: any, fullReturn?: boolean }
